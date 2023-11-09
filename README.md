@@ -1,18 +1,34 @@
-# Vue 3 + TypeScript + Vite
+# Vue3+Vite 服务端渲染示例
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+[掘金文章链接](https://juejin.cn/post/7299346713948930085)
 
-## Recommended IDE Setup
+## 待解决问题
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- ssr 端一旦添加了 jsdom 后就会报错
 
-## Type Support For `.vue` Imports in TS
+```
+[Vue Router warn]: No match found for location with path ""
+file:///D:/code/vue-ssr/node_modules/.pnpm/vue-router@4.2.5_vue@3.3.4/node_modules/vue-router/dist/vue-router.mjs:3339
+       const state = !isBrowser ? {} : history.state;
+                                               ^
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+TypeError: Cannot read properties of undefined (reading 'state')
+   at finalizeNavigation (file:///D:/code/vue-ssr/node_modules/.pnpm/vue-router@4.2.5_vue@3.3.4/node_modules/vue-router/dist/vue-router.mjs:3339:49)
+   at file:///D:/code/vue-ssr/node_modules/.pnpm/vue-router@4.2.5_vue@3.3.4/node_modules/vue-router/dist/vue-router.mjs:3218:27
+```
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+- ssr 渲染 html 时使用代理转发失败
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+```js
+import { createProxyMiddleware as proxyserver } from 'http-proxy-middleware';
+app.use(
+  '/api',
+  proxyserver({
+    target: `http://www.xiaolidan00.top/`,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/api': ''
+    }
+  })
+);
+```
